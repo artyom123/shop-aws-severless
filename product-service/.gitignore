@@ -1,9 +1,0 @@
-.idea
-node_modules
-*/node_modules
-
-# Serverless directories
-*/.serverless
-
-# Webpack directories
-*/.webpack
