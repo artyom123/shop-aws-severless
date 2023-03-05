@@ -5,12 +5,12 @@ export const getProductsById = async (event: APIGatewayEvent) => {
     const productsDataMocked: Product[] = require('./data/products.mocked.json')
     const { productId } = event.pathParameters
 
-    const product = productsDataMocked.find((product) => product.id === productId)
+    const product = await productsDataMocked.find((product) => product.id === productId)
 
     if (!product) {
         return {
             statusCode: 404,
-            message: 'Product not found'
+            body: 'Product not found'
         }
     }
 
