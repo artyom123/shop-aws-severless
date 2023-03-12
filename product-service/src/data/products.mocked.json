@@ -1,27 +1,27 @@
 [
   {
-    "count": 5,
+    "count": 1,
     "description": "Product 1",
     "id": "7567ec4b-b10c-48c5-9345-fc73c48a80aa",
     "price": 24,
     "title": "Wallpaper modern"
   },
   {
-    "count": 5,
+    "count": 2,
     "description": "Product 2",
     "id": "7567ec4b-b10c-48c5-9345-fc73c48a80a1",
     "price": 15,
     "title": "Wallpaper old-fashion"
   },
   {
-    "count": 5,
+    "count": 3,
     "description": "Product 3",
     "id": "7567ec4b-b10c-48c5-9345-fc73c48a80a3",
     "price": 23,
     "title": "Wallpaper for kitchen"
   },
   {
-    "count": 5,
+    "count": 4,
     "description": "Product 4",
     "id": "7567ec4b-b10c-48c5-9345-fc73348a80a1",
     "price": 15,
@@ -35,7 +35,7 @@
     "title": "Wallpaper tower"
   },
   {
-    "count": 5,
+    "count": 6,
     "description": "Product 6",
     "id": "7567ec4b-b10c-45c5-9345-fc73c48a80a1",
     "price": 15,

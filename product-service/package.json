@@ -19,6 +19,7 @@
     "@types/jest": "^29.4.0",
     "@types/node": "^18.14.6",
     "@types/serverless": "^3.12.11",
+    "@types/uuid": "^9.0.1",
     "babel-jest": "^29.4.3",
     "fork-ts-checker-webpack-plugin": "^7.3.0",
     "jest": "^29.4.3",
@@ -31,5 +32,10 @@
     "webpack-node-externals": "^3.0.0"
   },
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.1333.0",
+    "js-validate-type": "^1.0.1",
+    "uuid": "^9.0.0"
+  }
 }

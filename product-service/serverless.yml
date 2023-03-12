@@ -5,11 +5,32 @@ frameworkVersion: '3'
 plugins:
   - serverless-webpack
 
+custom:
+  webpack:
+    webpackConfig: 'webpack.config.js'
+    includeModules: true
+
 provider:
   name: aws
   runtime: nodejs14.x
   region: eu-west-1
   stage: dev
+  environment:
+    DYNAMODB_PRODUCTS_TABLE: 'Products'
+    DYNAMODB_STOCK_TABLE: 'Stock'
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - 'dynamodb:PutItem'
+            - 'dynamodb:Get*'
+            - 'dynamodb:Scan*'
+            - 'dynamodb:UpdateItem'
+            - 'dynamodb:DeleteItem'
+          Resource:
+            - 'arn:aws:dynamodb:eu-west-1:098115224976:table/Products'
+            - 'arn:aws:dynamodb:eu-west-1:098115224976:table/Stock'
 
 functions:
   getProductsList:
@@ -30,3 +51,35 @@ functions:
             parameters:
               paths:
                 productId: true
+  createProduct:
+    handler: handler.createProduct
+    events:
+      - http:
+          path: products
+          method: post
+          cors: true
+
+#resources:
+#  Resources:
+#    Products:
+#      Type: AWS::DynamoDB::Table
+#      Properties:
+#        TableName: products
+#        AttributeDefinitions:
+#          - AttributeName: id
+#            AttributeType: S
+#        BillingMode: PAY_PER_REQUEST
+#        KeySchema:
+#          - AttributeName: id
+#            KeyType: HASH
+#    Stock:
+#      Type: AWS::DynamoDB::Table
+#      Properties:
+#        TableName: stock
+#        AttributeDefinitions:
+#          - AttributeName: product_id
+#            AttributeType: S
+#        BillingMode: PAY_PER_REQUEST
+#        KeySchema:
+#          - AttributeName: product_id
+#            KeyType: HASH
