@@ -1,0 +1,4 @@
+.idea
+.serverless
+product-service/node_modules
+import-service/node_modules
