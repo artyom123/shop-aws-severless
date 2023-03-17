@@ -1,0 +1,43 @@
+service: import-service
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: eu-west-1
+  stage: dev
+  environment:
+    IMPORT_BUCKET: 'shop-aws-import-service'
+    REGION: 'eu-west-1'
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - 's3:ListBucket'
+            - 's3:PutObject'
+          Resource:
+            - 'arn:aws:s3:::${self:provider.environment.IMPORT_BUCKET}'
+        - Effect: 'Allow'
+          Action:
+            - 's3:*'
+          Resource:
+            - 'arn:aws:s3:::${self:provider.environment.IMPORT_BUCKET}/*'
+
+functions:
+  importProductsFile:
+    handler: importProductsFile.importProductsFile
+    events:
+      - http:
+          method: GET
+          path: import
+          cors: true
+  importFileParser:
+    handler: importFileParser.importFileParser
+    events:
+      - s3:
+          bucket: '${self:provider.environment.IMPORT_BUCKET}'
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded/
+          existing: true
