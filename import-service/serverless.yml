@@ -1,0 +1,48 @@
+service: import-service
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: eu-west-1
+  stage: dev
+  environment:
+    IMPORT_BUCKET: 'shop-aws-import-service'
+    REGION: 'eu-west-1'
+    CATALOG_QUEUE_URL: 'https://sqs.eu-west-1.amazonaws.com/098115224976/catalogQueue'
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - 's3:ListBucket'
+            - 's3:PutObject'
+          Resource:
+            - 'arn:aws:s3:::${self:provider.environment.IMPORT_BUCKET}'
+        - Effect: 'Allow'
+          Action:
+            - 's3:*'
+          Resource:
+            - 'arn:aws:s3:::${self:provider.environment.IMPORT_BUCKET}/*'
+        - Effect: 'Allow'
+          Action:
+            - 'sqs:SendMessage'
+          Resource: 'arn:aws:sqs:eu-west-1:098115224976:catalogQueue'
+
+functions:
+  importProductsFile:
+    handler: importProductsFile.importProductsFile
+    events:
+      - http:
+          method: GET
+          path: import
+          cors: true
+  importFileParser:
+    handler: importFileParser.importFileParser
+    events:
+      - s3:
+          bucket: '${self:provider.environment.IMPORT_BUCKET}'
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded/
+          existing: true
