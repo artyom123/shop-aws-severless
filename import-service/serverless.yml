@@ -9,6 +9,7 @@ provider:
   environment:
     IMPORT_BUCKET: 'shop-aws-import-service'
     REGION: 'eu-west-1'
+    CATALOG_QUEUE_URL: 'https://sqs.eu-west-1.amazonaws.com/098115224976/catalogQueue'
   iam:
     role:
       statements:
@@ -23,6 +24,10 @@ provider:
             - 's3:*'
           Resource:
             - 'arn:aws:s3:::${self:provider.environment.IMPORT_BUCKET}/*'
+        - Effect: 'Allow'
+          Action:
+            - 'sqs:SendMessage'
+          Resource: 'arn:aws:sqs:eu-west-1:098115224976:catalogQueue'
 
 functions:
   importProductsFile:

@@ -18,6 +18,8 @@ provider:
   environment:
     DYNAMODB_PRODUCTS_TABLE: 'Products'
     DYNAMODB_STOCK_TABLE: 'Stock'
+    SNS_TOPIC_ARN:
+      Ref: 'CreateProductTopic'
   iam:
     role:
       statements:
@@ -31,6 +33,16 @@ provider:
           Resource:
             - 'arn:aws:dynamodb:eu-west-1:098115224976:table/Products'
             - 'arn:aws:dynamodb:eu-west-1:098115224976:table/Stock'
+        - Effect: Allow
+          Action:
+            - sqs:*
+          Resource:
+            Fn::GetAtt: [ catalogQueue, Arn ]
+        - Effect: Allow
+          Action:
+            - sns:*
+          Resource:
+            Ref: CreateProductTopic
 
 functions:
   getProductsList:
@@ -58,6 +70,29 @@ functions:
           path: products
           method: post
           cors: true
+  catalogBatchProcess:
+    handler: handler.catalogBatchProcess
+    events:
+      - sqs:
+          batchSize: 5
+          arn: 'arn:aws:sqs:eu-west-1:098115224976:catalogQueue'
+
+resources:
+  Resources:
+    catalogQueue:
+      Type: 'AWS::SQS::Queue'
+      Properties:
+        QueueName: catalogQueue
+    CreateProductTopic:
+      Type: 'AWS::SNS::Topic'
+      Properties:
+        TopicName: createProductTopic
+    EmailSubscriptionForCreateProductTopic:
+      Type: 'AWS::SNS::Subscription'
+      Properties:
+        Endpoint: artyom.virshych@gmail.com
+        Protocol: email
+        TopicArn: { "Ref": 'CreateProductTopic' }
 
 #resources:
 #  Resources:

@@ -26,6 +26,15 @@ module.exports.importFileParser = async (event) => {
                         console.log(`Parsing: ${result}`)
                     })
                     .on('end', async () => {
+                        const sqs = new AWS.SQS()
+
+                        result.forEach(async product => {
+                            await sqs.sendMessage({
+                                    QueueUrl: process.env.CATALOG_QUEUE_URL,
+                                    MessageBody: JSON.stringify(product),
+                                }).promise()
+                        })
+
                         console.log('Parsing finished')
 
                         console.log('Copying started')
