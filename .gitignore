@@ -1,4 +1,6 @@
 .idea
 .serverless
+.env
 product-service/node_modules
 import-service/node_modules
+authorization-service/node_modules
