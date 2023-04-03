@@ -1,4 +1,4 @@
-service: import-service
+service: import-service-2
 frameworkVersion: '3'
 
 provider:
@@ -28,6 +28,8 @@ provider:
           Action:
             - 'sqs:SendMessage'
           Resource: 'arn:aws:sqs:eu-west-1:098115224976:catalogQueue'
+  httpApi:
+    cors: true
 
 functions:
   importProductsFile:
@@ -36,7 +38,12 @@ functions:
       - http:
           method: GET
           path: import
-          cors: true
+          authorizer:
+            name: basicAuthorizer
+            arn: 'arn:aws:lambda:${aws:region}:${aws:accountId}:function:authorization-service-dev-basicAuthorizer'
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Authorization
+            type: request
   importFileParser:
     handler: importFileParser.importFileParser
     events:
